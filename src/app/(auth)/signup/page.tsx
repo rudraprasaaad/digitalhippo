@@ -1,5 +1,7 @@
+"use client";
+
 import { Icons } from "@/components/Icons";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
@@ -11,6 +13,7 @@ import {
   AuthCredentialsValidator,
   TAuthCredentialsValidator,
 } from "@/lib/validators/account-credentials-validator";
+import { trpc } from "@/trpc/client";
 
 const Page = () => {
   const {
@@ -21,7 +24,14 @@ const Page = () => {
     resolver: zodResolver(AuthCredentialsValidator),
   });
 
-  const onSubmit = ({ email, password }: TAuthCredentialsValidator) => {};
+  const { mutate, isLoading } = trpc.auth.createPayloadUser.useMutation({});
+
+  const onSubmit = ({ email, password }: TAuthCredentialsValidator) => {
+    mutate({
+      email,
+      password,
+    });
+  };
 
   return (
     <>
@@ -60,9 +70,11 @@ const Page = () => {
                     className={cn({
                       "focus-visible:ring-red-500": errors.password,
                     })}
+                    type="password"
                     placeholder="........."
                   />
                 </div>
+                <Button>Sign up</Button>
               </div>
             </form>
           </div>
