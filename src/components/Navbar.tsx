@@ -4,9 +4,13 @@ import Link from "next/link";
 import NavItems from "./NavItems";
 import { buttonVariants } from "./ui/button";
 import Cart from "./Cart";
+import { getServerSideUser } from "@/lib/payload-utils";
+import { cookies } from "next/headers";
+import UserAccountNav from "./UserAccountNav";
 
-const Navbar = () => {
-  const user = null;
+const Navbar = async () => {
+  const nextCookies = cookies();
+  const { user } = await getServerSideUser(nextCookies);
 
   return (
     <div className="bg-white sticky z-50 top-0 inset-x-0 h-16">
@@ -26,7 +30,7 @@ const Navbar = () => {
                 <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
                   {user ? null : (
                     <Link
-                      href="/sign-in"
+                      href="/signin"
                       className={buttonVariants({ variant: "ghost" })}
                     >
                       Sign in
@@ -34,10 +38,10 @@ const Navbar = () => {
                   )}
 
                   {user ? (
-                    <p></p>
+                    <UserAccountNav user={user} />
                   ) : (
                     <Link
-                      href="/sign-up"
+                      href="/signup"
                       className={buttonVariants({ variant: "ghost" })}
                     >
                       Create account
